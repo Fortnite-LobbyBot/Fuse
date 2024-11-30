@@ -1,7 +1,7 @@
 /**
  * Fuse.js v7.0.0 - Lightweight fuzzy-search (http://fusejs.io)
  *
- * Copyright (c) 2023 Kiro Risk (http://kiro.me)
+ * Copyright (c) 2024 Kiro Risk (http://kiro.me)
  * All Rights Reserved. Apache Software License 2.0
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -1044,60 +1044,6 @@
     });
   }
 
-  function transformMatches(result, data) {
-    var matches = result.matches;
-    data.matches = [];
-    if (!isDefined(matches)) {
-      return;
-    }
-    matches.forEach(function (match) {
-      if (!isDefined(match.indices) || !match.indices.length) {
-        return;
-      }
-      var indices = match.indices,
-        value = match.value;
-      var obj = {
-        indices: indices,
-        value: value
-      };
-      if (match.key) {
-        obj.key = match.key.src;
-      }
-      if (match.idx > -1) {
-        obj.refIndex = match.idx;
-      }
-      data.matches.push(obj);
-    });
-  }
-
-  function transformScore(result, data) {
-    data.score = result.score;
-  }
-
-  function format(results, docs) {
-    var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
-      _ref$includeMatches = _ref.includeMatches,
-      includeMatches = _ref$includeMatches === void 0 ? Config.includeMatches : _ref$includeMatches,
-      _ref$includeScore = _ref.includeScore,
-      includeScore = _ref$includeScore === void 0 ? Config.includeScore : _ref$includeScore;
-    var transformers = [];
-    if (includeMatches) transformers.push(transformMatches);
-    if (includeScore) transformers.push(transformScore);
-    return results.map(function (result) {
-      var idx = result.idx;
-      var data = {
-        item: docs[idx],
-        refIndex: idx
-      };
-      if (transformers.length) {
-        transformers.forEach(function (transformer) {
-          transformer(result, data);
-        });
-      }
-      return data;
-    });
-  }
-
   var Fuse$1 = /*#__PURE__*/function () {
     function Fuse(docs) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -1163,12 +1109,11 @@
     }, {
       key: "search",
       value: function search(query) {
+        var _this = this;
         var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
           _ref$limit = _ref.limit,
           limit = _ref$limit === void 0 ? -1 : _ref$limit;
         var _this$options = this.options,
-          includeMatches = _this$options.includeMatches,
-          includeScore = _this$options.includeScore,
           shouldSort = _this$options.shouldSort,
           sortFn = _this$options.sortFn,
           ignoreFieldNorm = _this$options.ignoreFieldNorm;
@@ -1182,9 +1127,9 @@
         if (isNumber(limit) && limit > -1) {
           results = results.slice(0, limit);
         }
-        return format(results, this._docs, {
-          includeMatches: includeMatches,
-          includeScore: includeScore
+        return results.map(function (result) {
+          var idx = result.idx;
+          return _this._docs[idx];
         });
       }
     }, {
@@ -1231,7 +1176,7 @@
     }, {
       key: "_searchObjectList",
       value: function _searchObjectList(query) {
-        var _this2 = this;
+        var _this3 = this;
         var searcher = createSearcher(query, this.options);
         var _this$_myIndex = this._myIndex,
           keys = _this$_myIndex.keys,
@@ -1249,7 +1194,7 @@
 
           // Iterate over every key (i.e, path), and fetch the value at that key
           keys.forEach(function (key, keyIndex) {
-            matches.push.apply(matches, _toConsumableArray(_this2._findMatches({
+            matches.push.apply(matches, _toConsumableArray(_this3._findMatches({
               key: key,
               value: item[keyIndex],
               searcher: searcher

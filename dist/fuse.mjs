@@ -1,7 +1,7 @@
 /**
  * Fuse.js v7.0.0 - Lightweight fuzzy-search (http://fusejs.io)
  *
- * Copyright (c) 2023 Kiro Risk (http://kiro.me)
+ * Copyright (c) 2024 Kiro Risk (http://kiro.me)
  * All Rights Reserved. Apache Software License 2.0
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -1434,73 +1434,6 @@ function computeScore(
   });
 }
 
-function transformMatches(result, data) {
-  const matches = result.matches;
-  data.matches = [];
-
-  if (!isDefined(matches)) {
-    return
-  }
-
-  matches.forEach((match) => {
-    if (!isDefined(match.indices) || !match.indices.length) {
-      return
-    }
-
-    const { indices, value } = match;
-
-    let obj = {
-      indices,
-      value
-    };
-
-    if (match.key) {
-      obj.key = match.key.src;
-    }
-
-    if (match.idx > -1) {
-      obj.refIndex = match.idx;
-    }
-
-    data.matches.push(obj);
-  });
-}
-
-function transformScore(result, data) {
-  data.score = result.score;
-}
-
-function format(
-  results,
-  docs,
-  {
-    includeMatches = Config.includeMatches,
-    includeScore = Config.includeScore
-  } = {}
-) {
-  const transformers = [];
-
-  if (includeMatches) transformers.push(transformMatches);
-  if (includeScore) transformers.push(transformScore);
-
-  return results.map((result) => {
-    const { idx } = result;
-
-    const data = {
-      item: docs[idx],
-      refIndex: idx
-    };
-
-    if (transformers.length) {
-      transformers.forEach((transformer) => {
-        transformer(result, data);
-      });
-    }
-
-    return data
-  })
-}
-
 class Fuse {
   constructor(docs, options = {}, index) {
     this.options = { ...Config, ...options };
@@ -1569,8 +1502,6 @@ class Fuse {
 
   search(query, { limit = -1 } = {}) {
     const {
-      includeMatches,
-      includeScore,
       shouldSort,
       sortFn,
       ignoreFieldNorm
@@ -1592,9 +1523,9 @@ class Fuse {
       results = results.slice(0, limit);
     }
 
-    return format(results, this._docs, {
-      includeMatches,
-      includeScore
+    return results.map((result) =>  {   
+      const { idx } = result;
+      return this._docs[idx]
     })
   }
 

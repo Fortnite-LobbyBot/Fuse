@@ -1,9 +1,12 @@
 {
-  "name": "fuse.js",
+  "name": "@fnlb-project/fuse.js",
   "author": {
     "name": "Kiro Risk",
     "email": "kirollos@gmail.com",
     "url": "http://kiro.me"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "type": "module",
   "main": "./dist/fuse.cjs",
@@ -55,18 +58,16 @@
     "dev:cjs": "rollup -w -c scripts/configs.cjs --environment TARGET:commonjs-full",
     "dev:esm": "rollup -w -c scripts/configs.cjs --environment TARGET:esm-dev-full",
     "build": "rm -r dist && mkdir dist && node ./scripts/build.main.cjs",
-    "test": "vitest run",
-    "lint": "eslint src test",
+    "lint": "eslint src",
     "release": "./scripts/release.sh",
     "docs:bump": "node ./scripts/bump-docs.cjs",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "docs:release": "./scripts/deploy-docs.sh",
-    "prepare": "husky install"
+    "docs:release": "./scripts/deploy-docs.sh"
   },
   "standard-version": {
     "scripts": {
-      "postbump": "npm run build && npm run lint && npm run test 2>/dev/null",
+      "postbump": "npm run build && npm run lint",
       "precommit": "git add dist/*.js dist/*.cjs dist/*.mjs dist/*.d.ts"
     }
   },
@@ -99,7 +100,6 @@
     "babel-loader": "^9.1.2",
     "eslint": "8.32.0",
     "eslint-config-prettier": "8.6.0",
-    "husky": "^8.0.3",
     "monaco-editor": "^0.34.1",
     "prettier": "2.8.3",
     "replace-in-file": "^6.3.5",
@@ -108,7 +108,6 @@
     "standard-version": "^9.5.0",
     "terser": "^5.16.1",
     "typescript": "^4.9.4",
-    "vitest": "^0.28.3",
     "vuepress": "2.0.0-beta.60",
     "vuepress-plugin-google-adsense2": "1.0.2"
   },

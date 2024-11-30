@@ -27,7 +27,7 @@ declare class Fuse<T> {
   public search<R = T>(
     pattern: string | Expression,
     options?: FuseSearchOptions
-  ): FuseResult<R>[]
+  ): R[]
 
   public setCollection(docs: ReadonlyArray<T>, index?: FuseIndex<T>): void
 
@@ -349,13 +349,6 @@ type FuseSearchOptions = {
   limit: number
 }
 
-type FuseResult<T> = {
-  item: T
-  refIndex: number
-  score?: number
-  matches?: ReadonlyArray<FuseResultMatch>
-}
-
 type Expression =
   | { [key: string]: string }
   | {
@@ -365,4 +358,4 @@ type Expression =
   | { $and?: Expression[] }
   | { $or?: Expression[] }
 
-export { Expression, FuseGetFunction, FuseIndex, FuseIndexObjectRecord, FuseIndexOptions, FuseIndexRecords, FuseIndexStringRecord, FuseOptionKey, FuseOptionKeyObject, FuseResult, FuseResultMatch, FuseSearchOptions, FuseSortFunction, FuseSortFunctionArg, FuseSortFunctionItem, FuseSortFunctionMatch, FuseSortFunctionMatchList, IFuseOptions, RangeTuple, RecordEntry, RecordEntryArrayItem, RecordEntryObject, Fuse as default };
+export { Expression, FuseGetFunction, FuseIndex, FuseIndexObjectRecord, FuseIndexOptions, FuseIndexRecords, FuseIndexStringRecord, FuseOptionKey, FuseOptionKeyObject, FuseResultMatch, FuseSearchOptions, FuseSortFunction, FuseSortFunctionArg, FuseSortFunctionItem, FuseSortFunctionMatch, FuseSortFunctionMatchList, IFuseOptions, RangeTuple, RecordEntry, RecordEntryArrayItem, RecordEntryObject, Fuse as default };

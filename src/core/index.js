@@ -5,7 +5,6 @@ import { LogicalOperator, parse } from './queryParser'
 import { createSearcher } from './register'
 import Config from './config'
 import computeScore from './computeScore'
-import format from './format'
 import * as ErrorMsg from './errorMessages'
 
 export default class Fuse {
@@ -76,8 +75,6 @@ export default class Fuse {
 
   search(query, { limit = -1 } = {}) {
     const {
-      includeMatches,
-      includeScore,
       shouldSort,
       sortFn,
       ignoreFieldNorm
@@ -99,9 +96,9 @@ export default class Fuse {
       results = results.slice(0, limit)
     }
 
-    return format(results, this._docs, {
-      includeMatches,
-      includeScore
+    return results.map((result) =>  {   
+      const { idx } = result
+      return this._docs[idx]
     })
   }
 

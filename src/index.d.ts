@@ -27,7 +27,7 @@ declare class Fuse<T> {
   public search<R = T>(
     pattern: string | Expression,
     options?: FuseSearchOptions
-  ): FuseResult<R>[]
+  ): R[]
 
   public setCollection(docs: ReadonlyArray<T>, index?: FuseIndex<T>): void
 
@@ -347,13 +347,6 @@ export type FuseResultMatch = {
 
 export type FuseSearchOptions = {
   limit: number
-}
-
-export type FuseResult<T> = {
-  item: T
-  refIndex: number
-  score?: number
-  matches?: ReadonlyArray<FuseResultMatch>
 }
 
 export type Expression =
